@@ -41,7 +41,6 @@ flowchart LR
 - **Recall:** Hermes queries the Master Brain notebook before stating project-specific facts. NotebookLM answers only from its sources, with citations.
 - **Anti-hallucination gate:** every factual claim must come from memory (cited), live tool output, or the user. If it comes from none of these, the agent says it doesn't know.
 - **Write-back:** durable decisions, configs and fixes are appended as dated text sources (`mem/<date>/<project>-<topic>`). Writes are append-only, and secrets are redacted.
-- **Health gate:** "MCP connected but 0 tools" counts as a failure, not a pass.
 
 ## Security
 
