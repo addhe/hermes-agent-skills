@@ -1,0 +1,16 @@
+# Example: merge into ~/.hermes/config.yaml (snake_case keys; do NOT use the
+# camelCase "mcpServers" JSON that `nlm setup` prints for Claude Desktop).
+
+mcp_servers:
+  gemini_notebook_mcp:
+    command: "notebooklm-mcp"   # absolute path recommended for systemd gateways
+    args: []                    # multi-account: ["--profile", "work"]
+    timeout: 300
+    connect_timeout: 60
+    tools:
+      resources: false
+      prompts: false
+
+skills:
+  external_dirs:
+    - ~/hermes-agent-skills/skills   # or /opt/hermes-agent-skills/skills (read-only)

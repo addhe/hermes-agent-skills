@@ -1,0 +1,29 @@
+# gitleaks config: default rules + Telegram tokens + Google session cookies.
+[extend]
+useDefault = true
+
+[[rules]]
+id = "telegram-bot-token"
+description = "Telegram Bot API token"
+regex = '''[0-9]{8,10}:AA[A-Za-z0-9_-]{30,}'''
+keywords = [":AA"]
+
+[[rules]]
+id = "google-session-cookie"
+description = "Google account session cookie (NotebookLM login)"
+regex = '''(__Secure-[0-9]PSID|SAPISID|APISID)["=:\s]+[A-Za-z0-9_./-]{20,}'''
+keywords = ["PSID", "SAPISID", "APISID"]
+
+[[rules]]
+id = "ansible-vault-ciphertext"
+description = "Ansible vault content (keep vaults out of the public repo)"
+regex = '''\$ANSIBLE_VAULT;'''
+keywords = ["$ANSIBLE_VAULT"]
+
+[allowlist]
+description = "Scanners and secret-detection helpers contain regexes, not secrets"
+paths = [
+  '''(^|/)scripts/check-secrets\.sh$''',
+  '''(^|/)\.gitleaks\.toml$''',
+  '''(^|/)skills/[^/]+/scripts/lib\.sh$''',
+]

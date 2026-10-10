@@ -1,0 +1,54 @@
+name: ci
+
+on:
+  push:
+  pull_request:
+
+permissions:
+  contents: read
+
+jobs:
+  secret-scan:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0   # scan full history
+      - name: Install gitleaks
+        run: |
+          VER=8.24.2
+          curl -sSfL "https://github.com/gitleaks/gitleaks/releases/download/v${VER}/gitleaks_${VER}_linux_x64.tar.gz" \
+            | tar -xz -C /usr/local/bin gitleaks
+      - name: gitleaks (full history)
+        run: gitleaks git --config .gitleaks.toml --redact --verbose .
+      - name: check-secrets.sh
+        run: bash scripts/check-secrets.sh
+
+  lint:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: shellcheck
+        run: shellcheck -x -P SCRIPTDIR scripts/*.sh skills/*/scripts/*.sh
+      - name: SKILL.md frontmatter
+        run: |
+          python3 - <<'PY'
+          import glob, sys, yaml
+          bad = 0
+          for p in sorted(glob.glob("skills/*/SKILL.md")):
+              errs = []
+              text = open(p, encoding="utf-8").read()
+              if not text.startswith("---\n"):
+                  errs.append("missing frontmatter")
+              else:
+                  meta = yaml.safe_load(text.split("---\n", 2)[1]) or {}
+                  for key in ("name", "description", "version", "license"):
+                      if not meta.get(key):
+                          errs.append(f"missing '{key}'")
+                  folder = p.split("/")[1]
+                  if meta.get("name") != folder:
+                      errs.append(f"name '{meta.get('name')}' != folder '{folder}'")
+              print(f"{p}: " + ("; ".join(errs) if errs else "ok"))
+              bad |= bool(errs)
+          sys.exit(1 if bad else 0)
+          PY

@@ -1,0 +1,55 @@
+# ════════════════════════════════════════════════════════════════
+# PUBLIC REPO: never commit credentials or private memory.
+# pre-commit + CI also scan for leaks (scripts/check-secrets.sh, gitleaks).
+# ════════════════════════════════════════════════════════════════
+
+# NotebookLM / Google login material
+.notebooklm-mcp-cli/
+**/chrome-profiles/
+**/profiles/default/
+**/cookies.json
+**/cookies.txt
+**/Cookies
+**/Local State
+**/storage_state*.json
+nlm-cred*
+
+# Env / keys / vaults
+.env
+**/.env
+**/.env.*
+!**/*.env.example
+*.env
+**/*.pem
+**/*.key
+**/id_rsa*
+**/id_ed25519*
+**/credentials.json
+**/service-account*.json
+**/vault*.yml
+**/vault*.yaml
+.vault_pass*
+
+# Private agent memory / exports / backups
+**/memories/
+**/MEMORY.md
+**/USER.md
+**/DREAMS.md
+exports/
+backups/
+*.tar.gz
+*.tgz
+*.zip
+*.bak
+*.bak.*
+*.sqlite
+*.db
+
+# OS / editors / python
+.DS_Store
+.idea/
+.vscode/
+*.swp
+*~
+__pycache__/
+.venv/
